@@ -89,5 +89,5 @@ if os.path.exists(csv_file):
 else:
     st.warning("No hay archivo CSV para descargar.")
 
-st.page_link("pages/page6.py", label="Ir al resumen", icon="📋")
-st.page_link("pages/page9.py", label="Volver al menú principal", icon="🏠")
+st.page_link("pages/6_Resumen.py", label="Ir al resumen", icon="📋")
+st.page_link("Home.py", label="Volver al menú principal", icon="🏠")

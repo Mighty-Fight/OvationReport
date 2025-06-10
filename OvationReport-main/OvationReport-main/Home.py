@@ -166,7 +166,7 @@ with col2:
         """, 
         unsafe_allow_html=True
         )
-    st.page_link("pages/page1.py", label="Iniciar inspección", icon="🔧", help="Comenzar el proceso de inspección")
+    st.page_link("pages/1_Red_Ovation.py", label="Iniciar inspección", icon="🔧", help="Comenzar el proceso de inspección")
 
 # Footer
 st.markdown("---")

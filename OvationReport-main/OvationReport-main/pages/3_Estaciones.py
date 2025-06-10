@@ -32,7 +32,7 @@ else:
     csv_folder = tempfile.gettempdir()
     st.warning("Usando carpeta temporal debido a problemas de permisos.")
 
-csv_file = os.path.join(csv_folder, 'inspeccion_hist_windows.csv')
+csv_file = os.path.join(csv_folder, 'inspeccion_est_trabajo.csv')
 
 # Mostrar información de depuración
 #st.write(f"Ruta del archivo CSV: {csv_file}")
@@ -40,43 +40,38 @@ csv_file = os.path.join(csv_folder, 'inspeccion_hist_windows.csv')
 #st.write(f"El archivo CSV existe: {os.path.exists(csv_file)}")
 
 with st.sidebar:
-
+    # Selección de estación de trabajo
     option = st.selectbox(
-    "Drops y servidores",
-    ("Drop 160", "Drop 164", "Scanner 233", "Scanner 166"),)
-    # Ayuda con st.expander
-    with st.expander("Ayuda"):
-        st.write("""
-        Para confirmar el rendimiento del sistema abra el Administrador de tareas de Windows:
-                
-                Ctrl + Alt + Supr -> Administrador de tareas de Windows
-        
-                
-        - Revise la utilización de espacio en disco.
-        - Revise el uso, configuración y ubicación de la memoria física y virtual.
-        - Compruebe el monitor de rendimiento     
-        
-        Asegúrese de ingresar cualquier irregularidad o problema detectado para su posterior análisis.
-        """)
+        "Inspección de estaciones de trabajo",
+        ("160", "164", "166", "200", "212", "213", "214", "230", "233", "234"),
+    )
 
-annotated_text("Revisión de históticos y eventos de Windows " ,(f"{option}", "", "#7029ff"),)
+# Texto anotado
+annotated_text("Inspección de la estación de trabajo ", (f" {option} ", "", "#bf6b6b"))
+
+# Formulario para editar los datos
 form = st.form(key='my-form')
 
+# DataFrame para la inspección
 df = pd.DataFrame(
     [
-       {"Item": "Compruebe el Historian Status Monitor ¿Todo se encuentra en orden?", "Estado": False, },
-       {"Item": "Rendimiento óptimo del sistema", "Estado": False},
+       {"Item": "El equipo está encendido", "Estado": False},
+       {"Item": "Los dos cables de red se encuentran encendidos y funcionales", "Estado": False},
        {"Item": "El cableado del equipo se encuentra en buenas condiciones", "Estado": False},
        {"Item": "La sincronización horaria es la correcta con el GPS", "Estado": False},
     ]
 )
+
+# Editor de datos
 edited_df = form.data_editor(df)
 
-observaciones = form.text_area(
-    "Observaciones",
-)
+# Campo de texto para observaciones
+observaciones = form.text_area("Observaciones")
+
+# Botón de envío
 submit = form.form_submit_button('Submit')
 
+# Si se envía el formulario, guardar el DataFrame y las observaciones en un archivo CSV
 if submit:
     try:
         # Obtener la fecha y hora actuales
@@ -112,11 +107,7 @@ if submit:
         st.error(f"Error al guardar el archivo: {str(e)}")
         st.error(f"Tipo de error: {type(e).__name__}")
         st.error(f"Detalles adicionales: {e.args}")
-
-    # Navegación condicional para la estación 234
-    if option == "Scanner 166":
-        st.page_link("pages/page5.py", label="Siguiente", icon="➡️")
-        
+    
 # Mostrar los datos guardados
 with st.expander("Datos guardados"):
     # Mostrar el contenido del archivo CSV
@@ -126,7 +117,9 @@ with st.expander("Datos guardados"):
     else:
         st.error(f"No se pudo leer el archivo CSV: {csv_file}")
 
-
+# Navegación condicional para la estación 234
+if option == "234":
+    st.page_link("pages/page4.py", label="Siguiente", icon="➡️")
 
 # Botón para descargar el CSV
 if os.path.exists(csv_file):
@@ -134,11 +127,11 @@ if os.path.exists(csv_file):
         st.download_button(
             label="Descargar CSV",
             data=file,
-            file_name="inspeccion_hist_windows.csv",
+            file_name="inspeccion_est_trabajo.csv",
             mime="text/csv"
         )
 else:
     st.warning("No hay archivo CSV para descargar.")
 
-st.page_link("pages/page5.py", label="Siguiente", icon="➡️")
-st.page_link("pages/page9.py", label="Volver al menú principal", icon="🏠")
+st.page_link("pages/4_Historicos.py", label="Siguiente", icon="➡️")
+st.page_link("Home.py", label="Volver al menú principal", icon="🏠")

@@ -95,5 +95,5 @@ with st.sidebar:
         
         Asegúrese de ingresar cualquier irregularidad o problema detectado para su posterior análisis.
         """)
-
-st.page_link("pages/page9.py", label="Volver al menú principal", icon="🏠")
+st.page_link("pages/2_Controladores.py", label="Siguiente", icon="➡️")
+st.page_link("Home.py", label="Volver al menú principal", icon="🏠")
