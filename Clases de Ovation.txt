@@ -60,3 +60,13 @@ porque hay 2 fusibles si se daña uno ya se daña todo??
 Modules IO, modulo electrónico: EM, modulo de fusible: PM
 Terminator: para cambio requieren ver la manera de los ganchos
 in a Branch max 4 bases donde solo pueden haber 2 tarjetas cada uno,** topología exclusiva de tierras
+
+Clase #4:
+CONECTORES WDPF LAS NUEVAS Q110 Q112 Q114 Q116 LAS TARJETAS NEGRAS 
+¿QUE SON LOS TERMINALES EN LOS BRANCH? ¿ACOPLE DE LA IMPEDANCIA? 
+AMS SOFTWARE DIAGNOSTICO DE INSTRUMENTACION, ESENCIAL PARA FOUNDATION PROTOCOLO FUNCIONE BIEN, CUANDO MIGRO HUBO CARGUE MASIVO, INSTALACION DE LAS LICENCIAS QUE HACEN FALTA, CUANDO YO QUITO EL PROTOCOLO HART DE 4 A 20 mA 
+cuando se trabajan los servidores, se requiere usar la manilla electrostática,	
+
+REQUIERO ESTUDIAR EL MODULO 1 Y REVISAR LOS OBJETIVOS
+
+REVISAR LAS ESCRITAS DE EL FORMATO Y AJUSTAR MEJOR LA ORGANIZACION DE LOS ITEMS
