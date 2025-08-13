@@ -1,0 +1,62 @@
+Clases de Ovation
+Andrés Mena y José Daza
+Clase #1:
+OV-100 ovation database or data adquisition with ovation
+Modulo 1
+
+Objetivos del modulo, verificar si lo cumplimos
+sistema standart mundial,
+DCS el control es lo que se distribuye, el gabinete de red esta en cuarto DPU, fast enthernet, fibra óptico multimodo (mono vs multi)
+Ovation Drop:
+HMI computadores / servidores
+Controladores
+DROP 160 UP TO SERVIDORES AND CPU
+DROP 159 DOWN CONTROLLADORES
+Software instalado en cada equipo // T3000 solo corre en el servidor y los demás acceden al el
+Servidor de ingeniería OVATION DEVELOPER STUDIO
+Ovation Point, todo lo controlable
+HMI drops,
+
+Clase #2:
+
+Continuación Modulo 1; Empezaremos a hablar de los drops y ejemplos
+HMI, standarts
+DBSS, contiene la master Oracle database, DROP200 (único servidor en el mundo donde vaya el 200 es el de database)
+Algoritmos, ovation contiene AND OR etc, requires Windows server, requerido para todo si perdemos este no podemos realizar modificaciones,
+RAIMA es la presente en cada una
+OVATION DEVELOPER STUDIO: permite configura ovation drops,
+modifica alarmas
+modifica margen de error
+modificar las etiquetas auxiliares, (idea: usar esto para colocar los puntos de operación, cuando conmuta o cuando)
+DATABASE MISSMATCH -- no cuadra con la base de dato
+PARTNER MISSMATCH -- no cuadra con su redundante
+LOAD: cambios de la DB a los controladores
+SYSTEM STATUS: Grafico muñequitos de estado
+ERRORLOG:
+DOWNLOAD: PASAR LOS GRAFICOS DE LA BASE DE DATOS A LA HMI O RESTAURACION DE CONTROLADOR
+RECONCILE: reconcilio entre controlador y base de datos (caso de cambios en controlador únicamente)
+roles de ingeniero y operador
+ESTACION DEL OPERADOR: monitoreo de condiciones de la planta y/o comunicarse con los procesos de la planta
+podemos acceder desde cualquier WORKSTATION en ovation applications
+DOMAIN CONTROLLER: Gestiona usuarios de ovation;
+
+OVATION PROCESS HISTORIAN: Historico de los datos, ojo con el scanner que es de donde se toman los datos drops 160;164 (cuarto bpu), sincronización de los dos
+SCADA SERVER: THIRD PARTY: extranjero al sistema, ¿Cómo es la interacción con third party?
+
+Clase #3:
+Ovation Networks components
+Ovation networking:
+HMI Drops
+Controller drops: originar los imputs and outputs (falla del controlador 33, hoja de bloque,)
+OCR 3000 nuevo controlador, aplication compatible con ocr1100
+4 puertos
+#1: nodos remotos
+#2: principal
+#3: redundante
+#4: crossover de los dos
+porque hay 2 fusibles si se daña uno ya se daña todo??
+
+**Controller components
+Modules IO, modulo electrónico: EM, modulo de fusible: PM
+Terminator: para cambio requieren ver la manera de los ganchos
+in a Branch max 4 bases donde solo pueden haber 2 tarjetas cada uno,** topología exclusiva de tierras
