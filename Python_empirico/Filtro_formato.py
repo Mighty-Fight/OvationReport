@@ -46,7 +46,7 @@ def convertir_docx_a_pdf_y_extraer_numeros(carpeta_entrada, carpeta_salida, arch
                 total_convertidos += 1
                 numeros_ot.add(match.group(1))
             except Exception as e:
-                print(f"❌ Error al convertir {archivo}: {e}")
+                print(f"❌ Error al convertir los  {archivo}: {e}")
 
     word.Quit()
 
