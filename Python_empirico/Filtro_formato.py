@@ -67,7 +67,7 @@ def convertir_docx_a_pdf_y_extraer_numeros(carpeta_entrada, carpeta_salida, arch
     else:
         print("\n✅ Todos los archivos tenían el formato correcto.")
 
-    print("\n📊 RESUMEN:")
+    print("\n📊 RESUMEN qlq :")
     print(f" - Total de archivos .docx encontrados: {total_archivos_docx}")
     print(f" - Archivos convertidos exitosamente: {total_convertidos}")
     print(f" - Archivos con nombre inválido y movidos: {len(archivos_no_validos)}")
