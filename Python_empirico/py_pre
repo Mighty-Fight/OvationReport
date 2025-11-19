@@ -1,0 +1,147 @@
+import os
+import re
+import shutil
+import win32com.client
+from collections import Counter
+from openpyxl import Workbook
+from dotenv import load_dotenv
+
+load_dotenv()
+
+def procesar_ot_word():
+    # --- Cargar rutas desde .env ---
+    carpeta_entrada = os.getenv("carpeta_entrada")
+    carpeta_salida = os.getenv("carpeta_salida")
+    carpeta_errores = os.getenv("carpeta_errores")
+    carpeta_repetidos = os.getenv("carpeta_repetidos")
+    archivo_txt_salida = os.getenv("archivo_txt_salida")
+    ruta_excel = os.getenv("ruta_excel")
+
+    print("\n=== CONFIGURACIÓN DE RUTAS ===")
+    print(f"📂 Entrada: {carpeta_entrada}")
+    print(f"📂 Salida: {carpeta_salida}")
+    print(f"📂 Repetidos: {carpeta_repetidos}")
+    print(f"📂 Mal formato: {carpeta_errores}")
+    print(f"📄 Excel: {ruta_excel}")
+    print(f"📄 TXT: {archivo_txt_salida}\n")
+
+    # --- Crear carpetas si no existen ---
+    for carpeta in [carpeta_salida, carpeta_errores, carpeta_repetidos]:
+        os.makedirs(carpeta, exist_ok=True)
+
+    # --- Inicializar Word ---
+    word = win32com.client.Dispatch("Word.Application")
+    word.Visible = False
+
+    # --- Variables de control ---
+    total_archivos = 0
+    total_convertidos = 0
+    archivos_mal_formato = []
+    archivos_repetidos = []
+    numeros_ot = []
+    
+    # === PASO 1: Leer y analizar todos los archivos DOCX ===
+    print("=== PASO 1: Analizando nombres de archivo ===")
+    lista_ot = []
+    for archivo in os.listdir(carpeta_entrada):
+        if archivo.endswith(".docx") and not archivo.startswith("~$"):
+            match = re.search(r'OT_(\d+)_INFORME', archivo)
+            if match:
+                lista_ot.append(match.group(1))
+    conteo_ot = Counter(lista_ot)
+    ot_repetidos = {ot for ot, count in conteo_ot.items() if count > 1}
+
+    # === PASO 2: Convertir DOCX a PDF y clasificar ===
+    print("\n=== PASO 2: Convirtiendo y clasificando archivos ===")
+    for archivo in os.listdir(carpeta_entrada):
+        if archivo.endswith(".docx") and not archivo.startswith("~$"):
+            total_archivos += 1
+            origen = os.path.join(carpeta_entrada, archivo)
+            match = re.search(r'OT_(\d+)_INFORME', archivo)
+
+            # --- Caso: Formato inválido ---
+            if not match:
+                destino_docx = os.path.join(carpeta_errores, archivo)
+                destino_pdf = os.path.splitext(destino_docx)[0] + ".pdf"
+                shutil.move(origen, destino_docx)
+                print(f"❌ Formato inválido → movido a {carpeta_errores}")
+                try:
+                    doc = word.Documents.Open(destino_docx)
+                    doc.SaveAs(destino_pdf, FileFormat=17)
+                    doc.Close()
+                    total_convertidos += 1
+                    archivos_mal_formato.append(archivo)
+                except Exception as e:
+                    print(f"⚠️ Error al convertir {archivo}: {e}")
+                continue
+
+            ot_num = match.group(1)
+
+            # --- Caso: OT repetido ---
+            if ot_num in ot_repetidos:
+                destino_docx = os.path.join(carpeta_repetidos, archivo)
+                destino_pdf = os.path.splitext(destino_docx)[0] + ".pdf"
+                shutil.move(origen, destino_docx)
+                print(f"♻️ OT repetido {ot_num} → movido a {carpeta_repetidos}")
+                try:
+                    doc = word.Documents.Open(destino_docx)
+                    doc.SaveAs(destino_pdf, FileFormat=17)
+                    doc.Close()
+                    total_convertidos += 1
+                    archivos_repetidos.append(archivo)
+                except Exception as e:
+                    print(f"⚠️ Error al convertir {archivo}: {e}")
+                continue
+
+            # --- Caso: OT válido ---
+            destino_pdf = os.path.join(carpeta_salida, os.path.splitext(archivo)[0] + ".pdf")
+            try:
+                doc = word.Documents.Open(origen)
+                doc.SaveAs(destino_pdf, FileFormat=17)
+                doc.Close()
+                total_convertidos += 1
+                numeros_ot.append(ot_num)
+                print(f"✅ Convertido correctamente: {archivo}")
+            except Exception as e:
+                print(f"❌ Error al convertir {archivo}: {e}")
+
+    # --- Cerrar Word ---
+    word.Quit()
+
+    # === PASO 3: Crear Excel con OTs únicos ===
+    print("\n=== PASO 3: Creando listado en Excel ===")
+    numeros_unicos = sorted(set(numeros_ot + list(ot_repetidos)))
+    try:
+        wb = Workbook()
+        ws = wb.active
+        ws.title = "OTs"
+        ws.append(["Número OT"])
+        for num in numeros_unicos:
+            ws.append([num])
+        wb.save(ruta_excel)
+        print(f"📘 Archivo Excel generado: {ruta_excel}")
+    except Exception as e:
+        print(f"❌ Error al crear Excel: {e}")
+
+    # === PASO 4: Crear archivo TXT con formato ===
+    print("\n=== PASO 4: Creando archivo TXT ===")
+    try:
+        cadena_formateada = ' OR '.join(f'"{num}"' for num in numeros_unicos)
+        with open(archivo_txt_salida, 'w', encoding='utf-8') as f:
+            f.write(cadena_formateada)
+        print(f"📄 Archivo TXT generado: {archivo_txt_salida}")
+    except Exception as e:
+        print(f"❌ Error al crear TXT: {e}")
+
+    # === RESUMEN ===
+    print("\n📊 RESUMEN FINAL:")
+    print(f" - Total DOCX encontrados: {total_archivos}")
+    print(f" - Total convertidos: {total_convertidos}")
+    print(f" - Mal formato: {len(archivos_mal_formato)}")
+    print(f" - Repetidos: {len(archivos_repetidos)}")
+    print(f" - OTs únicos: {len(numeros_unicos)}")
+    print("\nProceso completado ✅")
+
+# --- Ejecutar ---
+if __name__ == "__main__":
+    procesar_ot_word()
